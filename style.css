@@ -1,0 +1,395 @@
+:root {
+  --bg: #0d0d0d;
+  --surface: #141414;
+  --surface2: #1c1c1c;
+  --border: #2a2a2a;
+  --border2: #3a3a3a;
+  --text: #f0ebe0;
+  --text2: #8a8070;
+  --text3: #5a5248;
+  --accent: #c9a84c;
+  --accent2: #8b6e2f;
+  --red: #c0392b;
+  --green: #2e7d52;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Sobreposição de grãos */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  opacity: 0.6;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 860px;
+  padding: 2.5rem 2rem 4rem;
+}
+
+/* Cabeçalho */
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+header h1 span {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.counter {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Principal */
+.main-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Coluna da forca */
+.gallows-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+#gallows {
+  width: 160px;
+  height: 190px;
+}
+
+.errors-row {
+  text-align: center;
+}
+
+.errors-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.error-dots {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.dot.filled {
+  background: var(--red);
+  border-color: var(--red);
+}
+
+/* Coluna de poemas */
+.poem-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cartões informativos */
+.info-card {
+  border: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  position: relative;
+}
+
+.info-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+}
+
+.info-tag {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.info-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.info-value.small {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.7;
+  font-style: normal;
+}
+
+/* Exibição de palavras */
+.word-tag {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 14px;
+  display: block;
+}
+
+.word-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: flex-end;
+}
+
+.char-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.char-letter {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 20px;
+  text-align: center;
+  height: 34px;
+  line-height: 34px;
+  transition: all 0.25s;
+}
+
+.char-letter.reveal {
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.char-line {
+  height: 1px;
+  width: 100%;
+  min-width: 20px;
+  background: var(--border2);
+  transition: background 0.3s;
+}
+
+.char-line.lit {
+  background: var(--accent);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Barra de status */
+.status-bar {
+  padding: 10px 14px;
+  font-size: 13px;
+  display: none;
+  border: 1px solid;
+}
+
+.status-bar.win {
+  display: block;
+  background: #0e1f16;
+  border-color: var(--green);
+  color: #5cb882;
+}
+
+.status-bar.lose {
+  display: block;
+  background: #1f0e0e;
+  border-color: var(--red);
+  color: #e07070;
+}
+
+.status-bar .reveal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* Teclado */
+.keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.key {
+  width: 34px;
+  height: 34px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.key:hover:not(:disabled) {
+  background: var(--surface2);
+  border-color: var(--accent2);
+  color: var(--accent);
+}
+
+.key:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.key:disabled {
+  cursor: default;
+}
+
+.key.miss {
+  background: #1f0e0e;
+  border-color: #4a1e1e;
+  color: #7a4040;
+  opacity: 0.8;
+}
+
+.key.hit {
+  background: #0e1a12;
+  border-color: #2a5a38;
+  color: #5cb882;
+}
+
+/* Controles */
+.controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn:hover {
+  color: var(--accent);
+  border-color: var(--accent2);
+  background: rgba(201, 168, 76, 0.06);
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #0d0d0d;
+  border-color: var(--accent);
+  font-weight: 500;
+}
+
+.btn.primary:hover {
+  background: #e0bb5c;
+}
+
+/* Revelação do verso do poema */
+.poem-full {
+  display: none;
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.9;
+  border-left: 2px solid var(--border2);
+  padding-left: 12px;
+  font-style: italic;
+  white-space: pre-line;
+}
+
+.poem-full.show {
+  display: block;
+}
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.5rem 0;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+  .gallows-col {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  header h1 {
+    font-size: 1.4rem;
+  }
+}
