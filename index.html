@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forca dos Poemas — Antologia da Língua Portuguesa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="page" id="app">
+        <!-- CABEÇALHO -->
+        <header class="header">
+            <div class="header__title">
+                <p class="overline">Antologia &nbsp;·&nbsp; Vol. I</p>
+                <h1 class="display-title" data-testid="app-title">
+                    Forca dos Poemas
+                </h1>
+                <p class="subtitle">
+                    Adivinhe o título de poemas célebres da literatura em
+                    língua portuguesa.
+                </p>
+            </div>
+
+            <div class="header__controls">
+                <div class="difficulty" role="tablist" data-testid="difficulty-selector">
+                    <button type="button" class="difficulty__btn" data-level="easy" data-testid="difficulty-easy">Fácil</button>
+                    <button type="button" class="difficulty__btn is-active" data-level="medium" data-testid="difficulty-medium">Médio</button>
+                    <button type="button" class="difficulty__btn" data-level="hard" data-testid="difficulty-hard">Difícil</button>
+                </div>
+                <button type="button" class="btn btn--ghost" id="restartBtn" data-testid="restart-button">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M3 12a9 9 0 1 0 3-6.7" />
+                        <path d="M3 4v5h5" />
+                    </svg>
+                    Novo Poema
+                </button>
+            </div>
+        </header>
+
+        <section class="grid">
+            <div class="grid__left">
+                <div class="hangman-wrap">
+                    <svg id="hangmanSvg" viewBox="0 0 240 280" stroke="#0A0A0A" stroke-width="2" fill="none" stroke-linecap="square" data-testid="hangman-svg">
+                        <line x1="20" y1="270" x2="160" y2="270" />
+                        <line x1="60" y1="270" x2="60" y2="20" />
+                        <line x1="60" y1="20" x2="180" y2="20" />
+                        <line x1="180" y1="20" x2="180" y2="50" />
+                        <g id="bodyParts" stroke="#D32F2F"></g>
+                    </svg>
+                </div>
+
+                <div class="stats">
+                    <div class="stats__cell">
+                        <p class="overline">Tentativas</p>
+                        <p class="stats__value" data-testid="attempts-remaining">
+                            <span id="attemptsRemaining">6</span><span class="stats__total">/<span id="attemptsTotal">6</span></span>
+                        </p>
+                    </div>
+                    <div class="stats__cell">
+                        <p class="overline">Erros</p>
+                        <p class="stats__value" data-testid="wrong-count">
+                            <span id="wrongCount">0</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid__right">
+                <div class="word-card">
+                    <p class="overline overline--center">Título do Poema</p>
+                    <div id="wordDisplay" class="word-display" data-testid="word-display"></div>
+                </div>
+
+                <div class="hint" data-testid="hint-panel">
+                    <span class="hint__label">Dica</span>
+                    <div class="hint__author" data-testid="hint-author">
+                        Autor &nbsp;·&nbsp; <span id="hintAuthor">—</span>
+                    </div>
+                    <blockquote class="hint__excerpt" id="hintExcerpt" data-testid="hint-excerpt">—</blockquote>
+                </div>
+
+                <div id="keyboard" class="keyboard" data-testid="keyboard"></div>
+            </div>
+        </section>
+
+        <section class="leaderboard" data-testid="leaderboard">
+            <div class="leaderboard__head">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                </svg>
+                <h2 class="overline">Ranking Local</h2>
+            </div>
+            <ol id="leaderboardList" class="leaderboard__list"></ol>
+            <p id="leaderboardEmpty" class="leaderboard__empty" data-testid="leaderboard-empty">
+                Nenhuma pontuação registrada ainda. Vença uma partida para entrar no ranking.
+            </p>
+        </section>
+
+        <footer class="footer">
+            <p class="overline overline--muted">
+                Use o teclado físico ou clique nas letras &nbsp;·&nbsp; Acentos são ignorados
+            </p>
+        </footer>
+    </main>
+
+    <div id="modal" class="modal" data-testid="gameover-modal" role="dialog" aria-modal="true" hidden>
+        <div class="modal__content">
+            <button type="button" class="modal__close" id="modalCloseBtn" aria-label="Fechar" data-testid="modal-close-button">×</button>
+            <p class="overline" id="modalResult">Vitória</p>
+            <h2 class="modal__title" id="modalTitle" data-testid="modal-title">Letras encontradas.</h2>
+
+            <div class="modal__poem">
+                <p class="overline">O poema era</p>
+                <p class="modal__poem-title" id="modalPoemTitle" data-testid="modal-poem-title">—</p>
+                <p class="modal__poem-author" id="modalPoemAuthor">—</p>
+            </div>
+
+            <blockquote class="modal__excerpt" id="modalExcerpt" data-testid="modal-poem-excerpt">—</blockquote>
+
+            <div class="modal__score-row" id="modalScoreRow">
+                <span class="overline">Pontuação</span>
+                <span class="modal__score" id="modalScore" data-testid="modal-score">0</span>
+            </div>
+
+            <div class="modal__save" id="modalSaveRow">
+                <input type="text" id="modalNameInput" class="modal__input" placeholder="Seu nome" maxlength="20" data-testid="modal-name-input" />
+                <button type="button" class="btn btn--primary" id="modalSaveBtn" data-testid="modal-save-score-button">Salvar Ranking</button>
+            </div>
+
+            <p class="modal__saved" id="modalSavedMsg" data-testid="modal-saved-message" hidden>✓ Pontuação registrada</p>
+
+            <div class="modal__actions">
+                <button type="button" class="btn btn--ghost" id="modalPlayAgainBtn" data-testid="modal-play-again-button">Nova Partida</button>
+            </div>
+        </div>
+    </div>
+
+   
+   <script src="poems.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
